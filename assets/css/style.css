@@ -1,0 +1,39 @@
+body{
+font-family:Segoe UI;
+background:#0f172a;
+color:white;
+margin:0;
+}
+.container{
+display:grid;
+grid-template-columns:300px 300px 1fr;
+gap:20px;
+padding:20px;
+}
+.card{
+background:#1e293b;
+padding:15px;
+border-radius:10px;
+box-shadow:0 0 10px #0005;
+}
+input,select,button{
+width:100%;
+margin:5px 0;
+padding:10px;
+border:none;
+border-radius:6px;
+}
+button{
+background:#22c55e;
+color:white;
+cursor:pointer;
+}
+table{
+width:100%;
+background:#1e293b;
+border-collapse:collapse;
+}
+td,th{
+padding:10px;
+border-bottom:1px solid #334155;
+}
