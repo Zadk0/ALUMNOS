@@ -1,21 +1,19 @@
-/* style.css */
+/* Estilos Generales (Combinados) */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f7f6;
+    background-color: #0f172a; /* Fondo oscuro de tu compañero */
+    color: white;              /* Texto claro para legibilidad */
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
-/* Navegación */
+/* Navegación (Tu diseño profesional) */
 nav {
-    background-color: #2c3e50;
+    background-color: #1e293b;
     width: 100%;
     padding: 15px 0;
     text-align: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
 
 nav a {
@@ -30,20 +28,27 @@ nav a:hover {
     color: #3498db;
 }
 
-/* Tarjetas de Formulario */
+/* Contenedor Grid (De tu compañero) */
+.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Tarjetas de Formulario (Tus estilos con colores oscuros de él) */
 .card {
-    background: white;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    width: 350px;
-    margin-top: 50px;
+    background: #1e293b; 
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    margin-bottom: 20px;
 }
 
 h3, h1 {
-    color: #2c3e50;
+    color: #3498db;
     text-align: center;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
 /* Campos de Formulario */
@@ -54,16 +59,18 @@ h3, h1 {
 .campo label {
     display: block;
     margin-bottom: 5px;
-    color: #666;
+    color: #94a3b8;
     font-size: 0.9em;
 }
 
 input, select {
     width: 100%;
     padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box; /* Evita que el input se salga del cuadro */
+    background: #0f172a;
+    color: white;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    box-sizing: border-box;
 }
 
 input:focus, select:focus {
@@ -71,27 +78,45 @@ input:focus, select:focus {
     border-color: #3498db;
 }
 
-/* Botones */
+/* Botones (Tu azul profesional o el verde de él) */
 .btn {
-    background-color: #3498db;
+    background-color: #22c55e; /* Verde funcional de tu compañero */
     color: white;
     border: none;
     padding: 12px;
     width: 100%;
-    border-radius: 4px;
+    border-radius: 6px;
     font-size: 1em;
     font-weight: bold;
     cursor: pointer;
-    transition: background 0.3s;
-    margin-top: 10px;
+    transition: opacity 0.3s;
 }
 
 .btn:hover {
-    background-color: #2980b9;
+    opacity: 0.8;
 }
 
 .disabled-input {
-    background-color: #ebedef;
-    color: #7f8c8d;
+    background-color: #334155;
+    color: #94a3b8;
     cursor: not-allowed;
+}
+
+/* Estilos de Tabla (De tu compañero) */
+table {
+    width: 100%;
+    background: #1e293b;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+td, th {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #334155;
+}
+
+th {
+    background: #334155;
+    color: #3498db;
 }
