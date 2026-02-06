@@ -1,5 +1,6 @@
 <?php
-include 'conexion.php';
+// Conectamos a la base de datos subiendo un nivel hacia la carpeta config
+include '../config/conexion.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nombre = $_POST['nombre'];
@@ -14,7 +15,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             VALUES ('$nombre', '$apaterno', '$amaterno', '$id_grupo', '$estatus')";
 
     if (mysqli_query($conexion, $sql)) {
-        echo "<script>alert('Alumno registrado correctamente'); window.location='registro_alumno.php';</script>";
+        // Redireccionamos subiendo un nivel y entrando a la carpeta views
+        echo "<script>alert('Alumno registrado correctamente'); window.location='../views/registro_alumno.php';</script>";
     } else {
         echo "Error: " . mysqli_error($conexion);
     }
