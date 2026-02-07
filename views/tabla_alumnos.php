@@ -1,4 +1,4 @@
-<?php require "config/db.php"; ?>
+<?php require "../config/db.php"; ?>
 <div class="card">
 <h3>Alumnos Registrados</h3>
 <table>
