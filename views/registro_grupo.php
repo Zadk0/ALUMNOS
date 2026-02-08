@@ -3,44 +3,65 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Registrar Grupo</title>
+    <title>Configurar Grupos</title>
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
     <?php include 'menu.php'; ?>
 
     <div class="card">
-        <h3>Registrar Grupo</h3>
-        <form action="../controllers/guardar_grupo.php" method="POST">
+        <h3>Crear Nuevo Grupo</h3>
+        <p style="font-size: 0.8em; color: #94a3b8; text-align: center; margin-bottom: 20px;">
+            Las siglas se generarán automáticamente al guardar.
+        </p>
+
+        <form action="../controllers/guardar_group.php" method="POST">
             <div class="campo">
                 <label>Carrera</label>
-                <select name="id_carrera" required>
+                <select name="carrera_id" required>
+                    <option value="">Selecciona Carrera</option>
                     <?php
-                    $res = mysqli_query($conexion, "SELECT id, nombre FROM carrera");
-                    while($row = mysqli_fetch_assoc($res)){
-                        echo "<option value='".$row['id']."'>".$row['nombre']."</option>";
+                    $res_c = mysqli_query($conexion, "SELECT id, nombre FROM carreras WHERE activo = 1");
+                    while($c = mysqli_fetch_assoc($res_c)){
+                        echo "<option value='".$c['id']."'>".$c['nombre']."</option>";
                     }
                     ?>
                 </select>
             </div>
+
             <div class="campo">
-                <label>Turno</label>
-                <select name="turno_letra">
-                    <option value="M">Matutino</option>
-                    <option value="V">Vespertino</option>
+                <label>Turno (Horario)</label>
+                <select name="turno_id" required>
+                    <option value="">Selecciona Turno</option>
+                    <?php
+                    $res_t = mysqli_query($conexion, "SELECT id, nombre FROM turnos");
+                    while($t = mysqli_fetch_assoc($res_t)){
+                        echo "<option value='".$t['id']."'>".$t['nombre']."</option>";
+                    }
+                    ?>
                 </select>
             </div>
+
             <div class="campo">
-                <label>Grado (Semestre)</label>
-                <input type="number" name="grado_num" min="1" max="11" value="1" required>
+                <label>Identificador de Turno (Para Siglas)</label>
+                <select name="turno_letra" required>
+                    <option value="M">M (Matutino)</option>
+                    <option value="V">V (Vespertino)</option>
+                </select>
             </div>
+
             <div class="campo">
-                <label>Siglas del Grupo</label>
-                <input type="text" class="disabled-input" placeholder="Generación Automática" disabled>
+                <label>Grado (Ejemplo: 1, 2, 3)</label>
+                <input type="number" name="grado" min="1" max="12" required>
             </div>
+
+            <div class="campo">
+                <label>Cuatrimestre</label>
+                <input type="number" name="cuatrimestre" min="1" max="12" required>
+            </div>
+
             <button type="submit" class="btn">Crear Grupo</button>
         </form>
     </div>
-
 </body>
 </html>

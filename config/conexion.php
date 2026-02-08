@@ -2,7 +2,7 @@
 $host = "localhost";
 $user = "root";
 $pass = "";
-$db   = "control_escolar";
+$db   = "sistema_escolar_v2"; // Nombre unificado
 
 $conexion = mysqli_connect($host, $user, $pass, $db);
 
