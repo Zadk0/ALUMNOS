@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $horario = limpiarDatos($_POST['horario']);
             
             if (!empty($nombre)) {
-                $stmt = $conn->prepare("INSERT INTO turnos (nombre, horario) VALUES (?, ?)");
+                $stmt = $conn->prepare("INSERT INTO turnos (nombre, horario, activo) VALUES (?, ?, 1)");
                 $stmt->bind_param("ss", $nombre, $horario);
                 
                 if ($stmt->execute()) {
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-// Obtener lista de turnos
+// Obtener lista de turnos activos
 $turnos_query = "SELECT * FROM turnos WHERE activo = 1 ORDER BY nombre";
 $turnos_result = $conn->query($turnos_query);
 ?>
@@ -78,25 +78,14 @@ $turnos_result = $conn->query($turnos_query);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catálogo de Turnos</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-</head>
+    <link rel="stylesheet" href="../assets/css/style.css"> </head>
 <body>
     <div class="container">
         <header>
             <h1>🎓 Sistema de Gestión Escolar</h1>
         </header>
 
-        <nav>
-            <ul>
-                <li><a href="index.php">Inicio</a></li>
-                <li><a href="alumnos.php">Alumnos</a></li>
-                <li><a href="grupos.php">Grupos</a></li>
-                <li><a href="carreras.php">Carreras</a></li>
-                <li><a href="turnos.php">Turnos</a></li>
-            </ul>
-        </nav>
-
-        <div class="content">
+        <?php include 'menu.php'; ?> <div class="content">
             <h2>🕐 Catálogo de Turnos</h2>
             
             <?php if (!empty($mensaje)): ?>
@@ -105,7 +94,6 @@ $turnos_result = $conn->query($turnos_query);
                 </div>
             <?php endif; ?>
 
-            <!-- Formulario de registro -->
             <form method="POST" action="">
                 <input type="hidden" name="action" value="agregar" id="action">
                 <input type="hidden" name="id" id="turno_id">
@@ -114,7 +102,7 @@ $turnos_result = $conn->query($turnos_query);
                     <div class="form-group">
                         <label for="nombre">Nombre del Turno *</label>
                         <input type="text" id="nombre" name="nombre" required 
-                               placeholder="Ej: MATUTINO, MIXTO, VESPERTINO">
+                               placeholder="Ej: MATUTINO, VESPERTINO">
                     </div>
                     
                     <div class="form-group">
@@ -124,19 +112,19 @@ $turnos_result = $conn->query($turnos_query);
                     </div>
                 </div>
 
-                <button type="submit" id="btnSubmit">Agregar Turno</button>
-                <button type="button" onclick="cancelarEdicion()" class="btn btn-secondary" id="btnCancelar" style="display:none;">Cancelar</button>
+                <div style="text-align: right;">
+                    <button type="submit" id="btnSubmit" class="btn">Agregar Turno</button>
+                    <button type="button" onclick="cancelarEdicion()" class="btn btn-secondary" id="btnCancelar" style="display:none;">Cancelar</button>
+                </div>
             </form>
 
-            <!-- Lista de turnos -->
-            <h3 style="margin-top: 40px;">Turnos Registrados</h3>
+            <h3 style="margin-top: 40px; color: #667eea;">Turnos Registrados</h3>
             <table>
                 <thead>
                     <tr>
                         <th>ID</th>
                         <th>Nombre</th>
                         <th>Horario</th>
-                        <th>Fecha de Registro</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -146,7 +134,6 @@ $turnos_result = $conn->query($turnos_query);
                             <td><?php echo $turno['id']; ?></td>
                             <td><strong><?php echo $turno['nombre']; ?></strong></td>
                             <td><?php echo $turno['horario'] ?: '-'; ?></td>
-                            <td><?php echo date('d/m/Y', strtotime($turno['fecha_registro'])); ?></td>
                             <td class="actions">
                                 <button onclick='editarTurno(<?php echo json_encode($turno); ?>)' class="btn btn-edit">Editar</button>
                                 <form method="POST" style="display:inline;" onsubmit="return confirm('¿Está seguro de eliminar este turno?');">
@@ -171,14 +158,12 @@ $turnos_result = $conn->query($turnos_query);
             document.getElementById('btnSubmit').textContent = 'Actualizar Turno';
             document.getElementById('btnCancelar').style.display = 'inline-block';
             
-            document.querySelector('form').scrollIntoView({ behavior: 'smooth' });
+            document.querySelector('.content').scrollIntoView({ behavior: 'smooth' });
         }
 
         function cancelarEdicion() {
-            document.getElementById('nombre').value = '';
-            document.getElementById('horario').value = '';
-            document.getElementById('turno_id').value = '';
             document.getElementById('action').value = 'agregar';
+            document.querySelector('form').reset();
             document.getElementById('btnSubmit').textContent = 'Agregar Turno';
             document.getElementById('btnCancelar').style.display = 'none';
         }

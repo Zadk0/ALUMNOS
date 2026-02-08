@@ -1,68 +1,68 @@
 <?php
-// carreras.php - Catálogo de Carreras
-require_once '../config/config.php';
+// carreras.php
+require_once '../config/config.php'; // Conexión unificada
 
-$conn = getConnection();
+$conn = getConnection(); // Función de conexión del compañero
 $mensaje = '';
 $tipo_mensaje = '';
 
-// Procesar formulario
+// Procesar acciones del formulario
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['action'])) {
         $action = $_POST['action'];
         
+        // Agregar Carrera
         if ($action == 'agregar') {
             $nombre = limpiarDatos($_POST['nombre']);
-            $clave = limpiarDatos($_POST['clave']);
+            $siglas = limpiarDatos($_POST['siglas']);
             $descripcion = limpiarDatos($_POST['descripcion']);
             
-            if (!empty($nombre) && !empty($clave)) {
-                $stmt = $conn->prepare("INSERT INTO carreras (nombre, clave, descripcion) VALUES (?, ?, ?)");
-                $stmt->bind_param("sss", $nombre, $clave, $descripcion);
+            if (!empty($nombre) && !empty($siglas)) {
+                $stmt = $conn->prepare("INSERT INTO carreras (nombre, siglas, descripcion, activo) VALUES (?, ?, ?, 1)");
+                $stmt->bind_param("sss", $nombre, $siglas, $descripcion);
                 
                 if ($stmt->execute()) {
-                    $mensaje = "Carrera agregada exitosamente";
+                    $mensaje = "Carrera registrada exitosamente";
                     $tipo_mensaje = "success";
                 } else {
-                    $mensaje = "Error al agregar carrera: " . $conn->error;
+                    $mensaje = "Error al registrar: " . $conn->error;
                     $tipo_mensaje = "error";
                 }
                 $stmt->close();
-            } else {
-                $mensaje = "El nombre y la clave son obligatorios";
-                $tipo_mensaje = "error";
             }
         }
         
+        // Editar Carrera
         if ($action == 'editar') {
             $id = intval($_POST['id']);
             $nombre = limpiarDatos($_POST['nombre']);
-            $clave = limpiarDatos($_POST['clave']);
+            $siglas = limpiarDatos($_POST['siglas']);
             $descripcion = limpiarDatos($_POST['descripcion']);
             
-            $stmt = $conn->prepare("UPDATE carreras SET nombre=?, clave=?, descripcion=? WHERE id=?");
-            $stmt->bind_param("sssi", $nombre, $clave, $descripcion, $id);
+            $stmt = $conn->prepare("UPDATE carreras SET nombre=?, siglas=?, descripcion=? WHERE id=?");
+            $stmt->bind_param("sssi", $nombre, $siglas, $descripcion, $id);
             
             if ($stmt->execute()) {
-                $mensaje = "Carrera actualizada exitosamente";
+                $mensaje = "Carrera actualizada correctamente";
                 $tipo_mensaje = "success";
             } else {
-                $mensaje = "Error al actualizar carrera";
+                $mensaje = "Error al actualizar";
                 $tipo_mensaje = "error";
             }
             $stmt->close();
         }
         
+        // Eliminar (Desactivar) Carrera
         if ($action == 'eliminar') {
             $id = intval($_POST['id']);
             $stmt = $conn->prepare("UPDATE carreras SET activo=0 WHERE id=?");
             $stmt->bind_param("i", $id);
             
             if ($stmt->execute()) {
-                $mensaje = "Carrera eliminada exitosamente";
+                $mensaje = "Carrera desactivada correctamente";
                 $tipo_mensaje = "success";
             } else {
-                $mensaje = "Error al eliminar carrera";
+                $mensaje = "Error al eliminar";
                 $tipo_mensaje = "error";
             }
             $stmt->close();
@@ -70,36 +70,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-// Obtener lista de carreras
-$carreras_query = "SELECT * FROM carreras WHERE activo = 1 ORDER BY nombre";
-$carreras_result = $conn->query($carreras_query);
+// Obtener lista de carreras activas
+$resultado = $conn->query("SELECT * FROM carreras WHERE activo = 1 ORDER BY nombre ASC");
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo de Carreras</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-</head>
+    <title>Gestión de Carreras</title>
+    <link rel="stylesheet" href="../assets/css/style.css"> </head>
 <body>
     <div class="container">
         <header>
             <h1>🎓 Sistema de Gestión Escolar</h1>
         </header>
 
-        <nav>
-            <ul>
-                <li><a href="index.php">Inicio</a></li>
-                <li><a href="alumnos.php">Alumnos</a></li>
-                <li><a href="grupos.php">Grupos</a></li>
-                <li><a href="carreras.php">Carreras</a></li>
-                <li><a href="turnos.php">Turnos</a></li>
-            </ul>
-        </nav>
-
-        <div class="content">
-            <h2>📚 Catálogo de Carreras</h2>
+        <?php include 'menu.php'; ?> <div class="content">
+            <h2>Gestión de Carreras</h2>
             
             <?php if (!empty($mensaje)): ?>
                 <div class="alert alert-<?php echo $tipo_mensaje; ?>">
@@ -107,59 +95,52 @@ $carreras_result = $conn->query($carreras_query);
                 </div>
             <?php endif; ?>
 
-            <!-- Formulario de registro -->
             <form method="POST" action="">
-                <input type="hidden" name="action" value="agregar" id="action">
+                <input type="hidden" name="action" id="form_action" value="agregar">
                 <input type="hidden" name="id" id="carrera_id">
                 
                 <div class="form-row">
                     <div class="form-group">
                         <label for="nombre">Nombre de la Carrera *</label>
-                        <input type="text" id="nombre" name="nombre" required 
-                               placeholder="Ej: Ingeniería en Sistemas">
+                        <input type="text" id="nombre" name="nombre" placeholder="Ej. Ingeniería en Sistemas" required>
                     </div>
                     
                     <div class="form-group">
-                        <label for="clave">Clave *</label>
-                        <input type="text" id="clave" name="clave" required 
-                               placeholder="Ej: ISC-SOT-U">
+                        <label for="siglas">Siglas (Para grupos) *</label>
+                        <input type="text" id="siglas" name="siglas" placeholder="Ej. ISC" required maxlength="10">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="descripcion">Descripción</label>
-                    <input type="text" id="descripcion" name="descripcion" 
-                           placeholder="Breve descripción de la carrera">
+                    <textarea id="descripcion" name="descripcion" class="form-control" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px; min-height: 80px;"></textarea>
                 </div>
 
-                <button type="submit" id="btnSubmit">Agregar Carrera</button>
-                <button type="button" onclick="cancelarEdicion()" class="btn btn-secondary" id="btnCancelar" style="display:none;">Cancelar</button>
+                <button type="submit" id="btn_submit" class="btn">Registrar Carrera</button>
+                <button type="button" id="btn_cancelar" class="btn btn-secondary" style="display:none;" onclick="cancelarEdicion()">Cancelar</button>
             </form>
 
-            <!-- Lista de carreras -->
-            <h3 style="margin-top: 40px;">Carreras Registradas</h3>
+            <h3 style="margin-top: 40px; color: #667eea;">Carreras Disponibles</h3>
             <table>
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Siglas</th>
                         <th>Nombre</th>
-                        <th>Clave</th>
                         <th>Descripción</th>
-                        <th>Fecha de Registro</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php while ($carrera = $carreras_result->fetch_assoc()): ?>
+                    <?php while ($carrera = $resultado->fetch_assoc()): ?>
                         <tr>
                             <td><?php echo $carrera['id']; ?></td>
+                            <td><strong><?php echo $carrera['siglas']; ?></strong></td>
                             <td><?php echo $carrera['nombre']; ?></td>
-                            <td><strong><?php echo $carrera['clave']; ?></strong></td>
                             <td><?php echo $carrera['descripcion'] ?: '-'; ?></td>
-                            <td><?php echo date('d/m/Y', strtotime($carrera['fecha_registro'])); ?></td>
                             <td class="actions">
-                                <button onclick='editarCarrera(<?php echo json_encode($carrera); ?>)' class="btn btn-edit">Editar</button>
-                                <form method="POST" style="display:inline;" onsubmit="return confirm('¿Está seguro de eliminar esta carrera?');">
+                                <button onclick="editarCarrera(<?php echo htmlspecialchars(json_encode($carrera)); ?>)" class="btn btn-edit">Editar</button>
+                                <form method="POST" style="display:inline;" onsubmit="return confirm('¿Desea eliminar esta carrera?');">
                                     <input type="hidden" name="action" value="eliminar">
                                     <input type="hidden" name="id" value="<?php echo $carrera['id']; ?>">
                                     <button type="submit" class="btn btn-delete">Eliminar</button>
@@ -174,25 +155,23 @@ $carreras_result = $conn->query($carreras_query);
 
     <script>
         function editarCarrera(carrera) {
-            document.getElementById('nombre').value = carrera.nombre;
-            document.getElementById('clave').value = carrera.clave;
-            document.getElementById('descripcion').value = carrera.descripcion || '';
+            document.getElementById('form_action').value = 'editar';
             document.getElementById('carrera_id').value = carrera.id;
-            document.getElementById('action').value = 'editar';
-            document.getElementById('btnSubmit').textContent = 'Actualizar Carrera';
-            document.getElementById('btnCancelar').style.display = 'inline-block';
+            document.getElementById('nombre').value = carrera.nombre;
+            document.getElementById('siglas').value = carrera.siglas;
+            document.getElementById('descripcion').value = carrera.descripcion || '';
             
-            document.querySelector('form').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('btn_submit').textContent = 'Actualizar Carrera';
+            document.getElementById('btn_cancelar').style.display = 'inline-block';
+            
+            document.querySelector('.content').scrollIntoView({ behavior: 'smooth' });
         }
 
         function cancelarEdicion() {
-            document.getElementById('nombre').value = '';
-            document.getElementById('clave').value = '';
-            document.getElementById('descripcion').value = '';
-            document.getElementById('carrera_id').value = '';
-            document.getElementById('action').value = 'agregar';
-            document.getElementById('btnSubmit').textContent = 'Agregar Carrera';
-            document.getElementById('btnCancelar').style.display = 'none';
+            document.getElementById('form_action').value = 'agregar';
+            document.querySelector('form').reset();
+            document.getElementById('btn_submit').textContent = 'Registrar Carrera';
+            document.getElementById('btn_cancelar').style.display = 'none';
         }
     </script>
 </body>

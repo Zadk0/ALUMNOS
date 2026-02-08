@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         if ($action == 'eliminar') {
             $id = intval($_POST['id']);
-            $stmt = $conn->prepare("UPDATE alumnos SET activo=0 WHERE id=?");
+            $stmt = $conn->prepare("UPDATE alumnos SET estatus=0 WHERE id=?");
             $stmt->bind_param("i", $id);
             
             if ($stmt->execute()) {
@@ -78,21 +78,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-// Obtener lista de alumnos
-$alumnos_query = "SELECT a.*, g.nombre as grupo_nombre 
+// Obtener lista de alumnos (Usando columna 'estatus' de tu BD unificada)
+$alumnos_query = "SELECT a.*, g.siglas as grupo_nombre 
                   FROM alumnos a 
                   LEFT JOIN grupos g ON a.grupo_id = g.id 
-                  WHERE a.activo = 1 
+                  WHERE a.estatus = 1 
                   ORDER BY a.apellido_paterno, a.apellido_materno, a.nombre";
 $alumnos_result = $conn->query($alumnos_query);
 
 // Obtener grupos para el formulario
-$grupos_query = "SELECT g.id, g.nombre, g.cuatrimestre, c.nombre as carrera_nombre, t.nombre as turno_nombre 
+$grupos_query = "SELECT g.id, g.siglas, g.cuatrimestre, c.nombre as carrera_nombre, t.nombre as turno_nombre 
                  FROM grupos g 
                  LEFT JOIN carreras c ON g.carrera_id = c.id
                  LEFT JOIN turnos t ON g.turno_id = t.id
-                 WHERE g.activo = 1 
-                 ORDER BY g.nombre";
+                 ORDER BY g.siglas";
 $grupos_result = $conn->query($grupos_query);
 ?>
 <!DOCTYPE html>
@@ -109,15 +108,7 @@ $grupos_result = $conn->query($grupos_query);
             <h1>🎓 Sistema de Gestión Escolar</h1>
         </header>
 
-        <nav>
-            <ul>
-                <li><a href="index.php">Inicio</a></li>
-                <li><a href="alumnos.php">Alumnos</a></li>
-                <li><a href="grupos.php">Grupos</a></li>
-                <li><a href="carreras.php">Carreras</a></li>
-                <li><a href="turnos.php">Turnos</a></li>
-            </ul>
-        </nav>
+        <?php include 'menu.php'; ?>
 
         <div class="content">
             <h2>Gestión de Alumnos</h2>
@@ -128,7 +119,6 @@ $grupos_result = $conn->query($grupos_query);
                 </div>
             <?php endif; ?>
 
-            <!-- Formulario de registro -->
             <form method="POST" action="">
                 <input type="hidden" name="action" value="agregar">
                 
@@ -180,25 +170,22 @@ $grupos_result = $conn->query($grupos_query);
                         while ($grupo = $grupos_result->fetch_assoc()): 
                         ?>
                             <option value="<?php echo $grupo['id']; ?>">
-                                <?php echo $grupo['nombre'] . ' - ' . $grupo['carrera_nombre'] . ' - ' . ($grupo['cuatrimestre'] ? $grupo['cuatrimestre'] . '° Cuatrimestre' : '') . ' (' . $grupo['turno_nombre'] . ')'; ?>
+                                <?php echo $grupo['siglas'] . ' - ' . $grupo['carrera_nombre'] . ' (' . $grupo['turno_nombre'] . ')'; ?>
                             </option>
                         <?php endwhile; ?>
                     </select>
                 </div>
 
-                <button type="submit">Registrar Alumno</button>
+                <button type="submit" class="btn">Registrar Alumno</button>
             </form>
 
-            <!-- Lista de alumnos -->
-            <h3 style="margin-top: 40px;">Lista de Alumnos</h3>
+            <h3 style="margin-top: 40px; color: #667eea;">Lista de Alumnos Activos</h3>
             <table>
                 <thead>
                     <tr>
                         <th>ID</th>
                         <th>Nombre Completo</th>
                         <th>Correo</th>
-                        <th>Teléfono</th>
-                        <th>Género</th>
                         <th>Grupo</th>
                         <th>Acciones</th>
                     </tr>
@@ -213,9 +200,7 @@ $grupos_result = $conn->query($grupos_query);
                                            $alumno['nombre']; ?>
                             </td>
                             <td><?php echo $alumno['correo'] ?: '-'; ?></td>
-                            <td><?php echo $alumno['telefono'] ?: '-'; ?></td>
-                            <td><?php echo $alumno['genero'] ?: '-'; ?></td>
-                            <td><?php echo $alumno['grupo_nombre'] ?: 'Sin grupo'; ?></td>
+                            <td><?php echo $alumno['grupo_nombre'] ?: '<span style="color:gray">Sin grupo</span>'; ?></td>
                             <td class="actions">
                                 <button onclick="editarAlumno(<?php echo htmlspecialchars(json_encode($alumno)); ?>)" class="btn btn-edit">Editar</button>
                                 <form method="POST" style="display:inline;" onsubmit="return confirm('¿Está seguro de eliminar este alumno?');">
@@ -233,35 +218,28 @@ $grupos_result = $conn->query($grupos_query);
 
     <script>
         function editarAlumno(alumno) {
-            if (confirm('¿Desea editar este alumno?')) {
-                document.getElementById('nombre').value = alumno.nombre;
-                document.getElementById('apellido_paterno').value = alumno.apellido_paterno;
-                document.getElementById('apellido_materno').value = alumno.apellido_materno || '';
-                document.getElementById('correo').value = alumno.correo || '';
-                document.getElementById('telefono').value = alumno.telefono || '';
-                document.getElementById('genero').value = alumno.genero || '';
-                document.getElementById('grupo_id').value = alumno.grupo_id || '';
-                
-                // Cambiar el formulario a modo edición
-                const form = document.querySelector('form');
-                form.querySelector('input[name="action"]').value = 'editar';
-                
-                // Agregar campo ID
-                let idInput = form.querySelector('input[name="id"]');
-                if (!idInput) {
-                    idInput = document.createElement('input');
-                    idInput.type = 'hidden';
-                    idInput.name = 'id';
-                    form.appendChild(idInput);
-                }
-                idInput.value = alumno.id;
-                
-                // Cambiar texto del botón
-                form.querySelector('button[type="submit"]').textContent = 'Actualizar Alumno';
-                
-                // Scroll al formulario
-                form.scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('nombre').value = alumno.nombre;
+            document.getElementById('apellido_paterno').value = alumno.apellido_paterno;
+            document.getElementById('apellido_materno').value = alumno.apellido_materno || '';
+            document.getElementById('correo').value = alumno.correo || '';
+            document.getElementById('telefono').value = alumno.telefono || '';
+            document.getElementById('genero').value = alumno.genero || '';
+            document.getElementById('grupo_id').value = alumno.grupo_id || '';
+            
+            const form = document.querySelector('form');
+            form.querySelector('input[name="action"]').value = 'editar';
+            
+            let idInput = form.querySelector('input[name="id"]');
+            if (!idInput) {
+                idInput = document.createElement('input');
+                idInput.type = 'hidden';
+                idInput.name = 'id';
+                form.appendChild(idInput);
             }
+            idInput.value = alumno.id;
+            
+            form.querySelector('button[type="submit"]').textContent = 'Actualizar Alumno';
+            form.scrollIntoView({ behavior: 'smooth' });
         }
     </script>
 </body>
