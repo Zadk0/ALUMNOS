@@ -1,5 +1,5 @@
 <?php
-require "../config/db.php";
+require "../config/config.php";
 if(isset($_POST['crear'])){
 $sql="INSERT INTO alumnos(nombre,apellido_p,apellido_m,grupo_id)
 VALUES(?,?,?,?)";

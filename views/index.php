@@ -1,6 +1,6 @@
 <?php
 // index.php
-include 'config/config.php'; // Usa tu archivo de conexión unificado
+include '../config/config.php'; // Usa tu archivo de conexión unificado
 
 // Obtener estadísticas reales de la base de datos
 $stats = [];

@@ -1,5 +1,5 @@
 <?php
-include '../config/conexion.php';
+include '../config/config.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $carrera_id   = $_POST['carrera_id'];

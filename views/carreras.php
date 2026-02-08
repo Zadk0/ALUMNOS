@@ -1,6 +1,6 @@
 <?php
 // carreras.php - Catálogo de Carreras
-require_once 'config/config.php';
+require_once '../config/config.php';
 
 $conn = getConnection();
 $mensaje = '';

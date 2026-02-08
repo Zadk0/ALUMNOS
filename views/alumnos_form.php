@@ -7,7 +7,7 @@
 <select onchange="cargarGrupos(this.value)">
 <option>Selecciona Carrera</option>
 <?php
-require "config/db.php";
+require "../config/config.php";
 $c=$pdo->query("SELECT * FROM carreras");
 foreach($c as $row){
 echo "<option value='{$row['id']}'>{$row['nombre']}</option>";

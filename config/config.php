@@ -4,7 +4,7 @@
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
-define('DB_NAME', 'sistema_escolar'); // Asegúrate de que este sea el nombre final en tu phpMyAdmin
+define('DB_NAME', 'sistema_escolar_v2'); // Asegúrate de que este sea el nombre final en tu phpMyAdmin
 
 // 1. MÉTODO COMPAÑERO: MySQLi Orientado a Objetos (Usado por sus vistas)
 function getConnection() {
