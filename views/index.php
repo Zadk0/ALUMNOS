@@ -6,8 +6,13 @@ $stats = [];
 $conn = getConnection(); 
 
 // Consultas alineadas con las columnas reales de tu base de datos
+// CONSULTAS CORREGIDAS SEGÚN TU ESTRUCTURA SQL ACTUAL:
 $stats['alumnos'] = $conn->query("SELECT COUNT(*) as total FROM alumnos WHERE estatus = 1")->fetch_assoc()['total'];
-$stats['grupos'] = $conn->query("SELECT COUNT(*) as total FROM grupos WHERE activo = 1")->fetch_assoc()['total'];
+
+// La tabla grupos NO tiene columna 'activo' ni 'estatus'
+$stats['grupos'] = $conn->query("SELECT COUNT(*) as total FROM grupos")->fetch_assoc()['total'];
+
+// Estas tablas SI tienen la columna 'activo'
 $stats['carreras'] = $conn->query("SELECT COUNT(*) as total FROM carreras WHERE activo = 1")->fetch_assoc()['total'];
 $stats['turnos'] = $conn->query("SELECT COUNT(*) as total FROM turnos WHERE activo = 1")->fetch_assoc()['total'];
 ?>
