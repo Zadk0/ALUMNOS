@@ -1,23 +1,20 @@
 <?php
-// views/index.php - Corregido para diseño horizontal
 require_once '../config/config.php'; 
 $conn = getConnection(); 
 
 $stats = [];
-// Consultas alineadas a tu base de datos sistema_escolar_v2
+// Consultas ajustadas a sistema_escolar_v2.sql
 $stats['alumnos'] = $conn->query("SELECT COUNT(*) as total FROM alumnos WHERE estatus = 1")->fetch_assoc()['total'];
 $stats['grupos'] = $conn->query("SELECT COUNT(*) as total FROM grupos")->fetch_assoc()['total']; 
 $stats['carreras'] = $conn->query("SELECT COUNT(*) as total FROM carreras WHERE activo = 1")->fetch_assoc()['total'];
 $stats['turnos'] = $conn->query("SELECT COUNT(*) as total FROM turnos WHERE activo = 1")->fetch_assoc()['total'];
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema Escolar - Inicio</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css?v=1">
 </head>
 <body>
     <div class="container">
@@ -50,18 +47,9 @@ $stats['turnos'] = $conn->query("SELECT COUNT(*) as total FROM turnos WHERE acti
             </div>
 
             <div class="alert alert-info">
-                <strong>¡Bienvenido al Sistema de Gestión Escolar!</strong>
-                <p>Utiliza el menú superior para gestionar alumnos, grupos, carreras y turnos.</p>
+                <strong>¡Bienvenido al Sistema!</strong>
+                <p>Usa el menú superior para navegar por las secciones.</p>
             </div>
-
-            <h3 style="margin-top: 20px;">Funcionalidades del Sistema:</h3>
-            <ul style="margin-top: 15px; line-height: 2; list-style-position: inside;">
-                <li>✅ Registro y gestión de alumnos</li>
-                <li>✅ Administración de grupos (Rama TELLEZ)</li>
-                <li>✅ Catálogo de carreras</li>
-                <li>✅ Catálogo de turnos</li>
-                <li>✅ Operaciones CRUD completas</li>
-            </ul>
         </div>
     </div>
 </body>
