@@ -1,6 +1,6 @@
 <?php
 // alumnos.php
-require_once 'config/config.php';
+require_once '../config/config.php';
 
 $conn = getConnection();
 $mensaje = '';
@@ -101,7 +101,7 @@ $grupos_result = $conn->query($grupos_query);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Alumnos</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
     <div class="container">
