@@ -1,38 +1,34 @@
 <?php
-// views/index.php - Corregido para base de datos sistema_escolar_v2
-include '../config/config.php'; 
+// views/index.php
+require_once '../config/config.php';
+$conn = getConnection();
 
 $stats = [];
-$conn = getConnection(); 
-
-// Consultas alineadas con las columnas reales de tu base de datos
-// CONSULTAS CORREGIDAS SEGÚN TU ESTRUCTURA SQL ACTUAL:
+// Ajuste de columnas según tu SQL: alumnos usa 'estatus', los demás 'activo'
 $stats['alumnos'] = $conn->query("SELECT COUNT(*) as total FROM alumnos WHERE estatus = 1")->fetch_assoc()['total'];
-
-// La tabla grupos NO tiene columna 'activo' ni 'estatus'
-$stats['grupos'] = $conn->query("SELECT COUNT(*) as total FROM grupos")->fetch_assoc()['total'];
-
-// Estas tablas SI tienen la columna 'activo'
+$stats['grupos'] = $conn->query("SELECT COUNT(*) as total FROM grupos")->fetch_assoc()['total']; // grupos no tiene columna activo en tu SQL
 $stats['carreras'] = $conn->query("SELECT COUNT(*) as total FROM carreras WHERE activo = 1")->fetch_assoc()['total'];
 $stats['turnos'] = $conn->query("SELECT COUNT(*) as total FROM turnos WHERE activo = 1")->fetch_assoc()['total'];
-?>
 
+$conn->close();
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema Escolar - Panel de Control</title>
+    <title>Sistema Escolar - Inicio</title>
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
     <div class="container">
         <header>
             <h1>🎓 Sistema de Gestión Escolar</h1>
-            <p style="color: #667eea; text-align: center; margin-top: 5px;">Rama de Trabajo: <strong>TELLEZ</strong></p>
         </header>
 
-        <?php include 'menu.php'; ?> <div class="content">
+        <?php include 'menu.php'; ?>
+
+        <div class="content">
             <h2>Panel de Control</h2>
             
             <div class="stats">
@@ -50,35 +46,24 @@ $stats['turnos'] = $conn->query("SELECT COUNT(*) as total FROM turnos WHERE acti
                 </div>
                 <div class="stat-card">
                     <h3><?php echo $stats['turnos']; ?></h3>
-                    <p>Turnos Configurados</p>
+                    <p>Turnos</p>
                 </div>
             </div>
 
             <div class="alert alert-info">
-                <strong>¡Bienvenido!</strong> Utiliza las opciones inferiores o el menú superior para gestionar el sistema.
+                <strong>¡Bienvenido al Sistema de Gestión Escolar!</strong>
+                <p>Utiliza el menú superior para gestionar alumnos, grupos, carreras y turnos.</p>
             </div>
 
-            <div class="form-row">
-                <div class="card" onclick="location.href='registro_alumno.php'" style="cursor:pointer; text-align: center; padding: 20px;">
-                    <h3 style="font-size: 1.2em;">Nuevo Alumno</h3>
-                    <p style="font-size: 0.8em; color: #666; margin-bottom: 15px;">Captura de datos e ingreso</p>
-                    <button class="btn">Ir a Registro</button>
-                </div>
-                
-                <div class="card" onclick="location.href='registro_grupo.php'" style="cursor:pointer; text-align: center; padding: 20px;">
-                    <h3 style="font-size: 1.2em;">Nuevo Grupo</h3>
-                    <p style="font-size: 0.8em; color: #666; margin-bottom: 15px;">Generación de siglas automáticas</p>
-                    <button class="btn" style="background:#764ba2;">Ir a Grupos</button>
-                </div>
-                
-                <div class="card" onclick="location.href='alumnos.php'" style="cursor:pointer; text-align: center; padding: 20px;">
-                    <h3 style="font-size: 1.2em;">Lista General</h3>
-                    <p style="font-size: 0.8em; color: #666; margin-bottom: 15px;">Consulta y edición de alumnos</p>
-                    <button class="btn-edit">Ver Tabla</button>
-                </div>
-            </div>
+            <h3 style="margin-top: 20px;">Funcionalidades del Sistema:</h3>
+            <ul style="margin-top: 15px; line-height: 2; list-style-position: inside;">
+                <li>✅ Registro y gestión de alumnos</li>
+                <li>✅ Administración de grupos (Rama TELLEZ)</li>
+                <li>✅ Catálogo de carreras</li>
+                <li>✅ Catálogo de turnos</li>
+                <li>✅ Operaciones CRUD completas</li>
+            </ul>
         </div>
     </div>
 </body>
 </html>
-<?php $conn->close(); ?>
