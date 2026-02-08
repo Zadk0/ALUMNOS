@@ -1,17 +1,17 @@
 <?php
-// views/index.php
-require_once '../config/config.php';
-$conn = getConnection();
+// views/index.php - Corregido para base de datos sistema_escolar_v2
+require_once '../config/config.php'; // Ruta corregida para entrar a config
 
 $stats = [];
-// Ajuste de columnas según tu SQL: alumnos usa 'estatus', los demás 'activo'
+$conn = getConnection(); 
+
+// Consultas alineadas con las columnas reales de tu base de datos
 $stats['alumnos'] = $conn->query("SELECT COUNT(*) as total FROM alumnos WHERE estatus = 1")->fetch_assoc()['total'];
-$stats['grupos'] = $conn->query("SELECT COUNT(*) as total FROM grupos")->fetch_assoc()['total']; // grupos no tiene columna activo en tu SQL
+$stats['grupos'] = $conn->query("SELECT COUNT(*) as total FROM grupos")->fetch_assoc()['total']; 
 $stats['carreras'] = $conn->query("SELECT COUNT(*) as total FROM carreras WHERE activo = 1")->fetch_assoc()['total'];
 $stats['turnos'] = $conn->query("SELECT COUNT(*) as total FROM turnos WHERE activo = 1")->fetch_assoc()['total'];
-
-$conn->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
