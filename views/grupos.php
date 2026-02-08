@@ -1,6 +1,6 @@
 <?php
 // grupos.php - Gestión de Grupos
-require_once 'includes/config.php';
+require_once 'config/config.php';
 
 $conn = getConnection();
 $mensaje = '';

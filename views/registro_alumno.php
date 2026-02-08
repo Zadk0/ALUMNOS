@@ -1,4 +1,4 @@
-<?php include '../config/conexion.php'; ?>
+<?php include '../config/config.php'; ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>

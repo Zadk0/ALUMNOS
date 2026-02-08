@@ -1,6 +1,6 @@
 <?php
 // turnos.php - Catálogo de Turnos
-require_once 'includes/config.php';
+require_once 'config/config.php';
 
 $conn = getConnection();
 $mensaje = '';
