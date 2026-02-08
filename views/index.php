@@ -6,7 +6,7 @@ $stats = [];
 $conn = getConnection(); // Usamos la función unificada de conexión
 
 // Estadísticas reales consultadas desde la base de datos unificada
-$stats['alumnos'] = $conn->query("SELECT COUNT(*) as total FROM alumnos WHERE estatus = 1")->fetch_assoc()['total'];
+$stats['alumnos'] = $conn->query("SELECT COUNT(*) as total FROM alumnos WHERE activo = 1")->fetch_assoc()['total'];
 $stats['grupos'] = $conn->query("SELECT COUNT(*) as total FROM grupos WHERE activo = 1")->fetch_assoc()['total'];
 $stats['carreras'] = $conn->query("SELECT COUNT(*) as total FROM carreras WHERE activo = 1")->fetch_assoc()['total'];
 $stats['turnos'] = $conn->query("SELECT COUNT(*) as total FROM turnos WHERE activo = 1")->fetch_assoc()['total'];
