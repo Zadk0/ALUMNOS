@@ -1,15 +1,15 @@
 <?php
-// views/index.php - Corregido para estar dentro de la carpeta views
-include '../config/config.php'; // Salimos a buscar la configuración unificada
+// views/index.php - Corregido para base de datos sistema_escolar_v2
+include '../config/config.php'; 
 
 $stats = [];
-$conn = getConnection(); // Usamos la función unificada de conexión
+$conn = getConnection(); 
 
-// Estadísticas reales consultadas desde la base de datos unificada
+// Consultas alineadas con las columnas reales de tu base de datos
 $stats['alumnos'] = $conn->query("SELECT COUNT(*) as total FROM alumnos WHERE estatus = 1")->fetch_assoc()['total'];
-$stats['grupos'] = $conn->query("SELECT COUNT(*) as total FROM grupos WHERE estatus = 1")->fetch_assoc()['total'];
-$stats['carreras'] = $conn->query("SELECT COUNT(*) as total FROM carreras WHERE estatus = 1")->fetch_assoc()['total'];
-$stats['turnos'] = $conn->query("SELECT COUNT(*) as total FROM turnos WHERE estatus = 1")->fetch_assoc()['total'];
+$stats['grupos'] = $conn->query("SELECT COUNT(*) as total FROM grupos WHERE activo = 1")->fetch_assoc()['total'];
+$stats['carreras'] = $conn->query("SELECT COUNT(*) as total FROM carreras WHERE activo = 1")->fetch_assoc()['total'];
+$stats['turnos'] = $conn->query("SELECT COUNT(*) as total FROM turnos WHERE activo = 1")->fetch_assoc()['total'];
 ?>
 
 <!DOCTYPE html>
