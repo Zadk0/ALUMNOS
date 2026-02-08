@@ -77,11 +77,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 // Obtener lista de grupos con información relacionada (Usando columna 'estatus' para alumnos si aplica)
 // Busca esta línea cerca de la 88 y déjala así:
-$grupos_query = "SELECT g.*, c.nombre as carrera_nombre, t.nombre as turno_nombre 
+$grupos_query = "SELECT g.*, 
+                        c.nombre as carrera_nombre, 
+                        t.nombre as turno_nombre,
+                        (SELECT COUNT(*) FROM alumnos WHERE grupo_id = g.id AND estatus = 1) as total_alumnos
                  FROM grupos g 
-                 LEFT JOIN carreras c ON g.carrera_id = c.id 
+                 LEFT JOIN carreras c ON g.carrera_id = c.id
                  LEFT JOIN turnos t ON g.turno_id = t.id 
-                 ORDER BY g.grado, g.siglas";
+                 ORDER BY g.siglas";
 $grupos_result = $conn->query($grupos_query);
 
 // Obtener carreras para el formulario
