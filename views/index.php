@@ -1,11 +1,10 @@
 <?php
-// views/index.php - Corregido para base de datos sistema_escolar_v2
-require_once '../config/config.php'; // Ruta corregida para entrar a config
-
-$stats = [];
+// views/index.php - Corregido para diseño horizontal
+require_once '../config/config.php'; 
 $conn = getConnection(); 
 
-// Consultas alineadas con las columnas reales de tu base de datos
+$stats = [];
+// Consultas alineadas a tu base de datos sistema_escolar_v2
 $stats['alumnos'] = $conn->query("SELECT COUNT(*) as total FROM alumnos WHERE estatus = 1")->fetch_assoc()['total'];
 $stats['grupos'] = $conn->query("SELECT COUNT(*) as total FROM grupos")->fetch_assoc()['total']; 
 $stats['carreras'] = $conn->query("SELECT COUNT(*) as total FROM carreras WHERE activo = 1")->fetch_assoc()['total'];
